@@ -1,14 +1,13 @@
-# Usar una imagen base de Nginx para servir archivos estáticos
+# Usa la imagen base de nginx
 FROM nginx:alpine
 
-# Copiar los archivos compilados de WebGL a la carpeta de Nginx
-COPY ./Build /usr/share/nginx/html
-
-# Copiar los archivos de TemplateData (si es necesario)
+# Copia los archivos generados por Unity a la carpeta de NGINX
+COPY ./Build /usr/share/nginx/html/Build
 COPY ./TemplateData /usr/share/nginx/html/TemplateData
+COPY ./index.html /usr/share/nginx/html
 
-# Exponer el puerto 80 (puerto por defecto de Nginx)
+# Exponer el puerto 80
 EXPOSE 80
 
-# Comando para iniciar Nginx cuando el contenedor se ejecute
+# Comando para iniciar NGINX
 CMD ["nginx", "-g", "daemon off;"]

@@ -1,0 +1,35 @@
+name: Docker Build, Push, and Deploy to Render
+
+on:
+  push:
+    branches:
+      - main  # Cambia esto a la rama que uses para liberaciones
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push: true
+        tags: ernestoazasan/echoes-of-shadows-web:latest
+
+    - name: Trigger Render deployment
+      run: |
+        SERVICE_ID="cudeao8gph6c73a0c0a0"  # Reemplaza con el ID de tu servicio en Render
+        curl -s -X POST \
+          -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+          -H "Accept: application/json" \
+          "https://api.render.com/v1/services/$SERVICE_ID/deploys"
