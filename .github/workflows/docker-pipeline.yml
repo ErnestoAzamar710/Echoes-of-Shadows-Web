@@ -49,7 +49,7 @@ jobs:
     # Paso 5: Desplegar en Render
     - name: Trigger Render deployment
       run: |
-        SERVICE_ID="cudeao8gph6c73a0c0a0"
+        SERVICE_ID="cv3jo6ogph6c738sd9n0"
         curl -s -X POST \
           -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
           -H "Accept: application/json" \
