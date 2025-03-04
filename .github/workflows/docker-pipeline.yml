@@ -3,7 +3,7 @@ name: Docker Build, Push, Test, and Deploy to Render
 on:
   push:
     branches:
-      - main  # Cambia esto a la rama que uses para liberaciones
+      - main
 
 jobs:
   build-push-test-deploy:
@@ -43,7 +43,9 @@ jobs:
     - name: Trigger Render deployment
       run: |
         SERVICE_ID="srv-cv3kcd5svqrc73fnsih0"
-        curl -s -X POST \
+        echo "Triggering deployment for service ID: $SERVICE_ID"
+        response=$(curl -s -X POST \
           -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
           -H "Accept: application/json" \
-          "https://api.render.com/v1/services/$SERVICE_ID/deploys"
+          "https://api.render.com/v1/services/$SERVICE_ID/deploys")
+        echo "Response from Render API: $response"
