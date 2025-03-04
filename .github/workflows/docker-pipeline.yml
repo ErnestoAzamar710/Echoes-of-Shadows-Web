@@ -29,27 +29,20 @@ jobs:
         push: true
         tags: ernestoazasan/echoes-of-shadows-web:latest
 
-    # Paso 4: Ejecutar pruebas en el entorno de liberación
+    # Paso 4: Ejecutar pruebas
     - name: Run tests
       run: |
-        # Ejecutar el contenedor en segundo plano
         docker run -d -p 80:80 --name echoes-of-shadows-web ernestoazasan/echoes-of-shadows-web:latest
-
-        # Esperar a que el contenedor esté listo
         sleep 10
-
-        # Ejecutar pruebas
-        docker exec echoes-of-shadows-web /bin/sh -c "curl -I http://localhost:80"
-        docker exec echoes-of-shadows-web /bin/sh -c "test -f /usr/share/nginx/html/index.html && echo 'index.html encontrado.' || echo 'index.html NO encontrado.'"
-
-        # Detener y eliminar el contenedor después de las pruebas
+        docker exec echoes-of-shadows-web /bin/sh -c "curl -I http://localhost:80 || exit 1"
+        docker exec echoes-of-shadows-web /bin/sh -c "test -f /usr/share/nginx/html/index.html && echo 'index.html encontrado.' || (echo 'index.html NO encontrado.' && exit 1)"
         docker stop echoes-of-shadows-web
         docker rm echoes-of-shadows-web
 
     # Paso 5: Desplegar en Render
     - name: Trigger Render deployment
       run: |
-        SERVICE_ID="cv3kcd5svqrc73fnsih0"
+        SERVICE_ID="srv-cv3kcd5svqrc73fnsih0"
         curl -s -X POST \
           -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
           -H "Accept: application/json" \
