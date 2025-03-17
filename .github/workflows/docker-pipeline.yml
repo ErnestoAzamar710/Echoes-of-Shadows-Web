@@ -39,8 +39,9 @@ jobs:
         docker stop echoes-of-shadows-web
         docker rm echoes-of-shadows-web
 
-    # Paso 5: Desplegar en Render
+    # Paso 5: Desplegar en Render (solo si las pruebas son exitosas)
     - name: Trigger Render deployment
+      if: success()
       run: |
         SERVICE_ID="srv-cv3kcd5svqrc73fnsih0"
         echo "Triggering deployment for service ID: $SERVICE_ID"
@@ -49,3 +50,9 @@ jobs:
           -H "Accept: application/json" \
           "https://api.render.com/v1/services/$SERVICE_ID/deploys")
         echo "Response from Render API: $response"
+
+    # Paso 6: Notificación en caso de fallo
+    - name: Notify on failure
+      if: failure()
+      run: |
+        echo "El despliegue ha fallado. Revisa los logs para más detalles."
